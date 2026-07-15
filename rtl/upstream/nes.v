@@ -73,6 +73,7 @@ endmodule
 
 module NES(
 	input         clk,
+	input         clk85,           // coprocessor fast clock (pass-through to cart_top)
 	input         reset_nes,
 	input         ppu_rst_behavior,
 	input         cold_reset,
@@ -661,6 +662,7 @@ assign mapper_has_flashsaves = has_flashsaves;
 cart_top multi_mapper (
 	// FPGA specific
 	.clk               (clk),
+	.clk85             (clk85),
 	.reset             (reset_noSS),
 	.flags             (mapper_flags),            // iNES header data (use 0 while loading)
 	.paused            (freeze_clocks),

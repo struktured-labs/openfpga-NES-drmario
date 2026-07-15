@@ -196,6 +196,7 @@ module nes_top (
 
   NES nes (
       .clk           (clk_ppu_21_47),
+      .clk85         (clk_85_9),
       .reset_nes     (reset_nes),
       .cold_reset    (downloading & (type_fds | type_nes)),
       .pausecore     (pausecore),

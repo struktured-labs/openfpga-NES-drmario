@@ -17,6 +17,7 @@
 
 module cart_top (
 	input             clk,
+	input             clk85,          // fast clock (clk_85_9) for the Dr.Mario coprocessor
 	input             ce,             // M2
 	input             cpu_ce,         // CPU Phi1 clock (several mappers use m2 inverted)
 	input             paused,         // This indicates the core is paused so anything using the master clock won't get messed up
@@ -127,7 +128,7 @@ MMC0 mmc0(
 MMC1 mmc1(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[171] | me[155] | me[1]),
+	.enable     (me[171] | me[155] | me[1] | me[100]),   // +100 = MMC1 banking for Dr.Mario copro
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2466,6 +2467,25 @@ vrc6_mixed snd_vrc6 (
 
 wire [1023:0] me;
 
+// Dr. Mario depth-2 AI coprocessor (mapper 100 = MMC1 banking + this block at $5000-$51FF).
+// Milestone-2 STUB standing in for the real second 6502 + BoardEngine: validates the host
+// window and the clk/clk85 CDC. Drop-in port match -> milestone 3 swaps CoproStub for
+// CoproDrMario (identical ports) and adds the real sources under rtl/upstream/mappers/.
+wire [7:0] copro_dout;
+wire       copro_sel;
+CoproStub #(.WIN(7'b0101_000)) copro(   // player 1: window $5000-$51FF
+	.clk      (clk),
+	.clk_cpu  (clk85),
+	.ce       (ce),
+	.enable   (me[100]),
+	.prg_ain  (prg_ain),
+	.prg_read (prg_read),
+	.prg_write(prg_write),
+	.prg_din  (prg_din),
+	.prg_dout (copro_dout),
+	.copro_sel(copro_sel)
+);
+
 always @* begin
 	me = 1024'd0;
 	me[{flags[18:17],flags[7:0]}] = 1'b1;
@@ -2487,6 +2507,12 @@ always @* begin
 	has_chr_dout    = flags_out_b[0];
 	prg_bus_write   = flags_out_b[1];
 	prg_conflict    = flags_out_b[2];
+
+	// Dr. Mario coprocessor window (mapper 100): copro drives reads on a window hit
+	if (copro_sel & prg_read) begin        // $5000-$51FF (player 1)
+		prg_dout      = copro_dout;
+		prg_bus_write = 1'b1;
+	end
 	has_savestate   = flags_out_b[3];
 	prg_conflict_d0 = flags_out_b[4];
 	has_flashsaves  = flags_out_b[5];
