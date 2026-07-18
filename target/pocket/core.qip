@@ -7,7 +7,10 @@ set_global_assignment -name SYSTEMVERILOG_FILE    [file join $::quartus(qip_path
 set_global_assignment -name SYSTEMVERILOG_FILE    [file join $::quartus(qip_path) "save_state_controller.sv"]
 set_global_assignment -name SYSTEMVERILOG_FILE    [file join $::quartus(qip_path) "sound_i2s.sv"]
 set_global_assignment -name SYSTEMVERILOG_FILE    [file join $::quartus(qip_path) "sync_fifo.sv"]
-set_global_assignment -name SYSTEMVERILOG_FILE    [file join $::quartus(qip_path) "CoproStub.sv"]
+# Dr. Mario copro (M3): vendored from dr-mario-mods/fpga/copro -- see vendor/copro/copro.qip.
+# CoproStub.sv (M2 scaffold) is superseded; kept in-tree for reference, no longer compiled.
+set_global_assignment -name QIP_FILE              [file join $::quartus(qip_path) "vendor/copro/copro.qip"]
+set_global_assignment -name SEARCH_PATH           [file join $::quartus(qip_path) "vendor/copro"]
 
 set_global_assignment -name SIGNALTAP_FILE [file join $::quartus(qip_path) "stp1.stp"]
 

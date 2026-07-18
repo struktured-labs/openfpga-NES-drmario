@@ -2468,12 +2468,12 @@ vrc6_mixed snd_vrc6 (
 wire [1023:0] me;
 
 // Dr. Mario depth-2 AI coprocessor (mapper 100 = MMC1 banking + this block at $5000-$51FF).
-// Milestone-2 STUB standing in for the real second 6502 + BoardEngine: validates the host
-// window and the clk/clk85 CDC. Drop-in port match -> milestone 3 swaps CoproStub for
-// CoproDrMario (identical ports) and adds the real sources under rtl/upstream/mappers/.
+// Second free-running 6502 (copro6502/Arlet) + BoardEngine/LeafEval search accelerator on clk85
+// (~85.9MHz); host window at $5000-$51FF. Vendored from dr-mario-mods/fpga/copro into
+// target/pocket/vendor/copro (see copro.qip); firmware = copro_rom.hex ($readmemh, via SEARCH_PATH).
 wire [7:0] copro_dout;
 wire       copro_sel;
-CoproStub #(.WIN(7'b0101_000)) copro(   // player 1: window $5000-$51FF
+CoproDrMario #(.WIN(7'b0101_000)) copro(   // player 1: window $5000-$51FF
 	.clk      (clk),
 	.clk_cpu  (clk85),
 	.ce       (ce),
