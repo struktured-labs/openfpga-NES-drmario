@@ -206,7 +206,7 @@ Mapper28 map28(
 Mapper30 map30(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[30]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -244,7 +244,7 @@ Mapper30 map30(
 Mapper32 map32(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[32]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -282,7 +282,7 @@ Mapper32 map32(
 MMC2 mmc2(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[9]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -329,7 +329,7 @@ wire mmc3_en = me[118] | me[119] | me[47] | me[206] | me[112] | me[88] | me[154]
 MMC3 mmc3 (
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (mmc3_en),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -371,7 +371,7 @@ MMC3 mmc3 (
 MMC4 mmc4(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[10]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -412,7 +412,7 @@ MMC4 mmc4(
 MMC5 mmc5(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[5]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -465,7 +465,7 @@ MMC5 mmc5(
 Mapper13 map13(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[13]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -496,7 +496,7 @@ Mapper13 map13(
 Mapper15 map15(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[15]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -530,7 +530,7 @@ wire [17:0] map16_mapper_addr;
 Mapper16 map16(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[159] | me[153] | me[16]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -574,7 +574,7 @@ Mapper16 map16(
 Mapper18 map18(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[18]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -612,7 +612,7 @@ Mapper18 map18(
 Mapper34 map34(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[34]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -650,7 +650,7 @@ Mapper34 map34(
 Mapper41 map41(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[41]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -681,7 +681,7 @@ Mapper41 map41(
 Mapper42 map42(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[40] | me[42]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -743,7 +743,7 @@ Mapper42 map42(
 Mapper65 map65(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[65]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -782,7 +782,7 @@ wire mapper66_en = me[11] | me[38] | me[46] | me[86] | me[87] | me[101] | me[140
 Mapper66 map66(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (mapper66_en),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -820,7 +820,7 @@ Mapper66 map66(
 Mapper67 map67(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[67] | me[190]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -858,7 +858,7 @@ Mapper67 map67(
 Mapper68 map68(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[68]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -896,7 +896,7 @@ Mapper68 map68(
 Mapper69 map69(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[69]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -934,7 +934,7 @@ Mapper69 map69(
 Mapper71 map71(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[71] | me[232]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -972,7 +972,7 @@ Mapper71 map71(
 Mapper72 map72(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[92] | me[72]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1010,7 +1010,7 @@ Mapper72 map72(
 Mapper77 map77(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[77]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1048,7 +1048,7 @@ Mapper77 map77(
 Mapper78 map78(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[152] | me[70] | me[78] | me[81]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1087,7 +1087,7 @@ Mapper78 map78(
 Mapper79 map79(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[79] | me[113] | me[133] | me[146] | me[148]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1125,7 +1125,7 @@ Mapper79 map79(
 Mapper83 map83(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[83]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1156,7 +1156,7 @@ Mapper83 map83(
 Mapper89 map89(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[89] | me[93] | me[184]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1194,7 +1194,7 @@ Mapper89 map89(
 Mapper107 map107(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[107]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1225,7 +1225,7 @@ Mapper107 map107(
 Mapper111 map111(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[111]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1263,7 +1263,7 @@ Mapper111 map111(
 Mapper165 map165(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[165]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1298,7 +1298,7 @@ Mapper165 map165(
 Mapper218 map218(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[218]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1331,7 +1331,7 @@ Mapper218 map218(
 Mapper227 map227(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[227]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1362,7 +1362,7 @@ Mapper227 map227(
 Mapper228 map228(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[228]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1395,7 +1395,7 @@ Mapper228 map228(
 Mapper234 map234(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[234]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1426,7 +1426,7 @@ Mapper234 map234(
 Mapper246 map246(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[246]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1497,7 +1497,7 @@ Mapper246 map246(
 NesEvent nesev(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[105]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1529,7 +1529,7 @@ NesEvent nesev(
 VRC1 vrc1(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[75]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1567,7 +1567,7 @@ VRC1 vrc1(
 VRC3 vrc3(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[73]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1605,7 +1605,7 @@ VRC3 vrc3(
 VRC24 vrc24(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[21] | me[22] | me[23] | me[25] | me[27]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1643,7 +1643,7 @@ VRC24 vrc24(
 VRC5 vrc5(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[547]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1693,7 +1693,7 @@ VRC5 vrc5(
 VRC6 vrc6(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[24] | me[26]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1731,7 +1731,7 @@ VRC6 vrc6(
 VRC7 vrc7(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[85]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1762,7 +1762,7 @@ VRC7 vrc7(
 N163 n163(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[210] | me[19]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1802,7 +1802,7 @@ N163 n163(
 Mapper162 map162(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[162]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1833,7 +1833,7 @@ Mapper162 map162(
 Nanjing map163(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[163]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1867,7 +1867,7 @@ Nanjing map163(
 Mapper164 map164(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[164]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1938,7 +1938,7 @@ Mapper164 map164(
 Sachen8259 sachen(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[137] | me[138] | me[139] | me[141] | me[150] | me[243]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -1977,7 +1977,7 @@ Sachen8259 sachen(
 SachenJV001 sachenj(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[136] | me[147] | me[132] | me[173] | me[172] | me[36]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2015,7 +2015,7 @@ SachenJV001 sachenj(
 SachenNROM sachenn(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[143]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2092,7 +2092,7 @@ SachenNROM sachenn(
 Mapper91 map91(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[91]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2124,7 +2124,7 @@ Mapper91 map91(
 Mapper225 map225(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[225] | me[255]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2155,7 +2155,7 @@ Mapper225 map225(
 Mapper200 map200(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[200] | me[212]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2186,7 +2186,7 @@ Mapper200 map200(
 Mapper487 map487(
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[487]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2224,7 +2224,7 @@ Mapper487 map487(
 Mapper413 map413 (
 	.clk        (clk),
 	.ce         (ce),
-	.enable     (me[413]),
+	.enable     (1'b0),
 	.flags      (flags),
 	.prg_ain    (prg_ain),
 	.prg_aout_b (prg_addr_b),
@@ -2345,7 +2345,7 @@ wire [15:0] ss5b_audio;
 SS5b_mixed snd_5bm (
 	.clk(clk),
 	.ce(ce),
-	.enable(me[69] | (me[31] && exp_audioe[5])),
+	.enable(1'b0),
 	.wren(prg_write),
 	.addr_in(prg_ain),
 	.data_in(prg_din),
@@ -2366,7 +2366,7 @@ namco163_mixed snd_n163 (
 	.clk(clk),
 	.ce(ce),
 	.submapper(flags[24:21]),
-	.enable(me[19] | (me[31] && exp_audioe[4])),
+	.enable(1'b0),
 	.wren(prg_write),
 	.addr_in(prg_ain),
 	.data_in(prg_din),
@@ -2394,7 +2394,7 @@ wire [7:0] mmc5_data;
 mmc5_mixed snd_mmc5 (
 	.clk(clk),
 	.ce(ce),
-	.enable(me[5] | (me[31] && exp_audioe[3])),
+	.enable(1'b0),
 	.wren(prg_write),
 	.rden(prg_read),
 	.addr_in(prg_ain),
@@ -2448,7 +2448,7 @@ wire [15:0] vrc6_audio;
 vrc6_mixed snd_vrc6 (
 	.clk(clk),
 	.ce(ce),
-	.enable(me[24] | me[26] | (me[31] && exp_audioe[0])),
+	.enable(1'b0),
 	.wren(prg_write),
 	.addr_invert(me[26]),
 	.addr_in(prg_ain),

@@ -810,7 +810,7 @@ module core_top (
       .selected_palette(selected_palette_s),
 
       .multitap_enabled(multitap_enabled_s),
-      .lightgun_enabled(lightgun_enabled_s),
+      .lightgun_enabled(1'b0),  // Dr-Mario-only trim: lightgun/zapper stripped (frees ~153 ALM)
       .lightgun_dpad_aim_speed(lightgun_dpad_aim_speed_s),
 
       .turbo_speed(turbo_speed_s),
