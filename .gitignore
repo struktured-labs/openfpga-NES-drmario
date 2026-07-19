@@ -69,4 +69,11 @@ cr_ie_info.json
 !info.txt
 # ROMS Checklist
 !checklist.sha1
-!checklist.md5
+!checklist.md5build_*.log
+artifacts/
+.pubvenv/
+.github/publish/
+tmp/
+tmp_m3.stamp
+output_files_seed*/
+sta_paths.*
