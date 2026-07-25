@@ -142,7 +142,7 @@ module nes_top (
 
   wire gg_code = 0;
   wire gg_reset = 0;
-  wire gg_avail = 0;
+  wire gg_avail;   // driven by the NES module's gg_avail OUTPUT (was const 0 = double-drive; A&S error on a clean rm-db compile). Unused downstream.
 
   wire int_audio = 1;
   wire ext_audio = 1;
@@ -194,9 +194,19 @@ module nes_top (
   end
 
 
+  // A2b clock fix (2026-07-23): the copro rides its OWN clock (clk_85_9 / 2 = 42.95 MHz),
+  // DISTINCT from the host clk_ppu_21_47. The prior A2 fed .clk85 = clk_ppu_21_47 = the host
+  // net, collapsing the copro<->host GO/DONE 2FF synchronizers to same-net (field freeze:
+  // whole game halted mid-air on the first cold search). This restores a real 2:1 clock
+  // crossing (host 21.477 -> copro 42.95, 2x oversampled = robust), meets Pocket timing
+  // (R47 worst path ~12ns << 23.3ns period), and runs the search ~2x faster than 21.47.
+  // clk_85_9 stays SDRAM-only. Needs a create_generated_clock on clk_copro in the SDC.
+  reg clk_copro = 1'b0;
+  always @(posedge clk_85_9) clk_copro <= ~clk_copro;
+
   NES nes (
       .clk           (clk_ppu_21_47),
-      .clk85         (clk_85_9),
+      .clk85         (clk_copro),
       .reset_nes     (reset_nes),
       .cold_reset    (downloading & (type_fds | type_nes)),
       .pausecore     (pausecore),
