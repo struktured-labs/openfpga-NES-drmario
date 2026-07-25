@@ -733,6 +733,27 @@ module core_top (
       clk_ppu_21_47
   );
 
+  // Analog-stick -> d-pad fallback for axes-reporting USB pads (e.g. Hyperkin Cadet, whose
+  // physical d-pad is dead). APF joy = {[15:8]=Y, [7:0]=X}, unsigned, 0x80-centered. Gated off
+  // lightgun mode (stick = aim there). Harmless if the dock forwards no axes (joy stays 0x80).
+  // P2 gets a synchronizer too (cont2_joy is provided) for the 2-player dock.
+  wire [31:0] cont2_joy_s;
+  synch_3 #(
+      .WIDTH(32)
+  ) joy2_s (
+      cont2_joy,
+      cont2_joy_s,
+      clk_ppu_21_47
+  );
+  wire p1_stick_up    = ~lightgun_enabled_s && (cont1_joy_s[15:8] < 8'h40);
+  wire p1_stick_down  = ~lightgun_enabled_s && (cont1_joy_s[15:8] > 8'hC0);
+  wire p1_stick_left  = ~lightgun_enabled_s && (cont1_joy_s[7:0]  < 8'h40);
+  wire p1_stick_right = ~lightgun_enabled_s && (cont1_joy_s[7:0]  > 8'hC0);
+  wire p2_stick_up    = ~lightgun_enabled_s && (cont2_joy_s[15:8] < 8'h40);
+  wire p2_stick_down  = ~lightgun_enabled_s && (cont2_joy_s[15:8] > 8'hC0);
+  wire p2_stick_left  = ~lightgun_enabled_s && (cont2_joy_s[7:0]  < 8'h40);
+  wire p2_stick_right = ~lightgun_enabled_s && (cont2_joy_s[7:0]  > 8'hC0);
+
   reg [1:0] prev_region = 0;
 
   always @(posedge clk_ppu_21_47) begin
@@ -762,10 +783,10 @@ module core_top (
       .p1_button_b_turbo(cont1_key_s[7]),
       .p1_button_start(cont1_key_s[15]),
       .p1_button_select(cont1_key_s[14]),
-      .p1_dpad_up(cont1_key_s[0]),
-      .p1_dpad_down(cont1_key_s[1]),
-      .p1_dpad_left(cont1_key_s[2]),
-      .p1_dpad_right(cont1_key_s[3]),
+      .p1_dpad_up(cont1_key_s[0] | p1_stick_up),
+      .p1_dpad_down(cont1_key_s[1] | p1_stick_down),
+      .p1_dpad_left(cont1_key_s[2] | p1_stick_left),
+      .p1_dpad_right(cont1_key_s[3] | p1_stick_right),
 
       .p1_lstick_x(cont1_joy_s[7:0]),
       .p1_lstick_y(cont1_joy_s[15:8]),
@@ -776,10 +797,10 @@ module core_top (
       .p2_button_b_turbo(cont2_key_s[7]),
       .p2_button_start(cont2_key_s[15]),
       .p2_button_select(cont2_key_s[14]),
-      .p2_dpad_up(cont2_key_s[0]),
-      .p2_dpad_down(cont2_key_s[1]),
-      .p2_dpad_left(cont2_key_s[2]),
-      .p2_dpad_right(cont2_key_s[3]),
+      .p2_dpad_up(cont2_key_s[0] | p2_stick_up),
+      .p2_dpad_down(cont2_key_s[1] | p2_stick_down),
+      .p2_dpad_left(cont2_key_s[2] | p2_stick_left),
+      .p2_dpad_right(cont2_key_s[3] | p2_stick_right),
 
       .p3_button_a(cont3_key_s[4]),
       .p3_button_b(cont3_key_s[5]),
