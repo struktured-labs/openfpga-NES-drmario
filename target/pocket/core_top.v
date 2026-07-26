@@ -735,8 +735,7 @@ module core_top (
 
   // Analog-stick -> d-pad fallback for axes-reporting USB pads (e.g. Hyperkin Cadet, whose
   // physical d-pad is dead). APF joy = {[15:8]=Y, [7:0]=X}, unsigned, 0x80-centered. Gated off
-  // lightgun mode (stick = aim there). Harmless if the dock forwards no axes (joy stays 0x80).
-  // P2 gets a synchronizer too (cont2_joy is provided) for the 2-player dock.
+  // lightgun mode (stick = aim there). P2 gets a synchronizer too (cont2_joy provided, 2P dock).
   wire [31:0] cont2_joy_s;
   synch_3 #(
       .WIDTH(32)
@@ -745,14 +744,33 @@ module core_top (
       cont2_joy_s,
       clk_ppu_21_47
   );
-  wire p1_stick_up    = ~lightgun_enabled_s && (cont1_joy_s[15:8] < 8'h40);
-  wire p1_stick_down  = ~lightgun_enabled_s && (cont1_joy_s[15:8] > 8'hC0);
-  wire p1_stick_left  = ~lightgun_enabled_s && (cont1_joy_s[7:0]  < 8'h40);
-  wire p1_stick_right = ~lightgun_enabled_s && (cont1_joy_s[7:0]  > 8'hC0);
-  wire p2_stick_up    = ~lightgun_enabled_s && (cont2_joy_s[15:8] < 8'h40);
-  wire p2_stick_down  = ~lightgun_enabled_s && (cont2_joy_s[15:8] > 8'hC0);
-  wire p2_stick_left  = ~lightgun_enabled_s && (cont2_joy_s[7:0]  < 8'h40);
-  wire p2_stick_right = ~lightgun_enabled_s && (cont2_joy_s[7:0]  > 8'hC0);
+  // CENTERED-ONCE arm latch (task #39). A Pocket with NO analog device reads joy = 0x0000
+  // (NOT 0x80-centered), so a bare value threshold (<0x40) phantom-latches LEFT+UP forever
+  // and freezes handheld play. Guard: sticky `armed` sets only after BOTH joy bytes land in
+  // the center window [0x60,0xA0] at least once -> 0x0000 can never arm; a real pad centers
+  // at ~0x7F on plug-in and arms immediately (config-init 0, set-once). Thresholds merge into
+  // the d-pad ONLY when armed. (Bench-validated: 0x0000-forever never arms; centered-then-0x00
+  // asserts d-pad-left; differential vs the old value-only logic confirms the test discriminates.)
+  // NOTE: armed is sticky-for-session -> covers absent-from-boot (the reported bug); a pad
+  // unplugged mid-play stays armed and could re-phantom on 0x0000 (documented known limit).
+  reg p1_stick_armed = 1'b0;
+  reg p2_stick_armed = 1'b0;
+  wire p1_joy_centered = (cont1_joy_s[7:0]  >= 8'h60) && (cont1_joy_s[7:0]  <= 8'hA0) &&
+                         (cont1_joy_s[15:8] >= 8'h60) && (cont1_joy_s[15:8] <= 8'hA0);
+  wire p2_joy_centered = (cont2_joy_s[7:0]  >= 8'h60) && (cont2_joy_s[7:0]  <= 8'hA0) &&
+                         (cont2_joy_s[15:8] >= 8'h60) && (cont2_joy_s[15:8] <= 8'hA0);
+  always @(posedge clk_ppu_21_47) begin
+      if (p1_joy_centered) p1_stick_armed <= 1'b1;
+      if (p2_joy_centered) p2_stick_armed <= 1'b1;
+  end
+  wire p1_stick_up    = p1_stick_armed && ~lightgun_enabled_s && (cont1_joy_s[15:8] < 8'h40);
+  wire p1_stick_down  = p1_stick_armed && ~lightgun_enabled_s && (cont1_joy_s[15:8] > 8'hC0);
+  wire p1_stick_left  = p1_stick_armed && ~lightgun_enabled_s && (cont1_joy_s[7:0]  < 8'h40);
+  wire p1_stick_right = p1_stick_armed && ~lightgun_enabled_s && (cont1_joy_s[7:0]  > 8'hC0);
+  wire p2_stick_up    = p2_stick_armed && ~lightgun_enabled_s && (cont2_joy_s[15:8] < 8'h40);
+  wire p2_stick_down  = p2_stick_armed && ~lightgun_enabled_s && (cont2_joy_s[15:8] > 8'hC0);
+  wire p2_stick_left  = p2_stick_armed && ~lightgun_enabled_s && (cont2_joy_s[7:0]  < 8'h40);
+  wire p2_stick_right = p2_stick_armed && ~lightgun_enabled_s && (cont2_joy_s[7:0]  > 8'hC0);
 
   reg [1:0] prev_region = 0;
 
@@ -768,6 +786,7 @@ module core_top (
       .clk_74a(clk_74a),
       .clk_ppu_21_47(clk_ppu_21_47),
       .clk_85_9(clk_85_9),
+      .clk_copro(clk_copro),
       .clock_locked(pll_core_locked),
 
       .sys_type(region_s),
@@ -991,6 +1010,7 @@ module core_top (
   wire clk_ppu_21_47;
   wire clk_video_5_37;
   wire clk_video_5_37_90deg;
+  wire clk_copro;  // dedicated coprocessor clock (PLL outclk_4 = VCO/11 = 54.669 MHz)
 
   // wire [63:0] reconfig_to_pll;
   // wire [63:0] reconfig_from_pll;
@@ -1008,6 +1028,7 @@ module core_top (
       .outclk_1(clk_ppu_21_47),
       .outclk_2(clk_video_5_37),
       .outclk_3(clk_video_5_37_90deg),
+      .outclk_4(clk_copro),
 
       // .reconfig_to_pll  (reconfig_to_pll),
       // .reconfig_from_pll(reconfig_from_pll),

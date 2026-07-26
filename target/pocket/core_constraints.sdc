@@ -4,21 +4,25 @@
 # put your clock groups in here as well as any net assignments
 #
 
-# A2b (2026-07-23): copro rides clk_85_9/2 = 42.95 MHz (distinct from host clk_ppu_21_47).
-# clk_copro is a fabric /2 of outclk_0 (clk_85_9), VCO-related to outclk_0/1 -> joins their
-# synchronous group so the copro<->host crossing is TIMED (not false-pathed; phase-locked).
-# NOTE: verify the target pin on first synthesis (register nes_top.clk_copro = ic|nes|clk_copro).
-create_generated_clock -name clk_copro -divide_by 2 \
- -source [get_pins {ic|mp1|mf_pllbase_inst|altera_pll_i|*[0].*|divclk}] \
- [get_pins {ic|nes|clk_copro|q}]
+# Clock-bump (2026-07-25): the copro rides its OWN dedicated PLL tap, outclk_4 (index [4]),
+# = VCO/11 = 54.669 MHz. It is auto-created by the altera_pll IP (no create_generated_clock
+# needed -- the old fabric clk_85_9/2 divider is gone).
+# The copro<->host crossing is ASYNCHRONOUS-SAFE by construction (host->copro reset/GO is a
+# 2FF synchronizer rst_m/cpu_rst; board-in and results/DONE-out go through a true dual-port
+# work RAM with flag-after-data ordering). The ONLY register-to-register cross path is the
+# synchronizer input rst_cnt[*]->rst_m, which must NOT be timed. At the old ÷2 (phase-locked
+# 2:1) timing it was free; at outclk_4 (28:11 vs host) the tight beat makes that synchronizer
+# input fail setup by ~1.3ns even though intra-copro closes with +1.69ns. So the copro clock
+# gets its OWN async group -> the synchronizer/BRAM crossing is correctly CUT, intra-copro
+# stays timed. clk_85_9(outclk_0)+clk_ppu_21_47(outclk_1) stay grouped (real sdram<->host paths).
 
 set_clock_groups -asynchronous \
  -group { bridge_spiclk } \
  -group { clk_74a } \
  -group { clk_74b } \
  -group { ic|mp1|mf_pllbase_inst|altera_pll_i|*[0].*|divclk \
-          ic|mp1|mf_pllbase_inst|altera_pll_i|*[1].*|divclk \
-          clk_copro } \
+          ic|mp1|mf_pllbase_inst|altera_pll_i|*[1].*|divclk } \
+ -group { ic|mp1|mf_pllbase_inst|altera_pll_i|*[4].*|divclk } \
  -group { ic|mp1|mf_pllbase_inst|altera_pll_i|*[2].*|divclk } \
  -group { ic|mp1|mf_pllbase_inst|altera_pll_i|*[3].*|divclk } \
  -group { ic|audio_mixer|audio_pll|mf_audio_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk \

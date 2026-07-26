@@ -2,6 +2,7 @@ module nes_top (
     input clk_74a,
     input clk_ppu_21_47,
     input clk_85_9,
+    input clk_copro,
     input clock_locked,
 
     input [1:0] sys_type,
@@ -194,15 +195,17 @@ module nes_top (
   end
 
 
-  // A2b clock fix (2026-07-23): the copro rides its OWN clock (clk_85_9 / 2 = 42.95 MHz),
-  // DISTINCT from the host clk_ppu_21_47. The prior A2 fed .clk85 = clk_ppu_21_47 = the host
-  // net, collapsing the copro<->host GO/DONE 2FF synchronizers to same-net (field freeze:
-  // whole game halted mid-air on the first cold search). This restores a real 2:1 clock
-  // crossing (host 21.477 -> copro 42.95, 2x oversampled = robust), meets Pocket timing
-  // (R47 worst path ~12ns << 23.3ns period), and runs the search ~2x faster than 21.47.
-  // clk_85_9 stays SDRAM-only. Needs a create_generated_clock on clk_copro in the SDC.
-  reg clk_copro = 1'b0;
-  always @(posedge clk_85_9) clk_copro <= ~clk_copro;
+  // Clock-bump (2026-07-25): the copro rides its OWN dedicated PLL tap (clk_copro =
+  // mf_pllbase outclk_4 = VCO/11 = 54.669 MHz), DISTINCT from the host clk_ppu_21_47 and
+  // from the SDRAM clk_85_9. Replaces the earlier fabric clk_85_9/2 = 42.95 MHz divider
+  // (the delta firmware's ~18.9 ns copro critical path made 42.95 a strength regression).
+  // 54.669 is the fastest integer-C VCO division at which the copro's OWN logic closes
+  // (intra-copro slack +1.69 ns; Restricted Fmax ~60 MHz post-refit). The copro<->host
+  // crossing is async-safe by construction (host->copro reset/GO = 2FF synchronizer
+  // rst_m/cpu_rst; board-in + results/DONE-out = true dual-port work RAM, flag-after-data),
+  // so in the SDC clk_copro sits in its OWN async clock group -- the synchronizer input
+  // rst_cnt[*]->rst_m is correctly CUT, not timed (at this 28:11-vs-host ratio timing it
+  // would false-fail setup ~1.3 ns). clk_85_9 stays SDRAM-only (this tap adds no load to it).
 
   NES nes (
       .clk           (clk_ppu_21_47),
