@@ -1,4 +1,4 @@
-// AUTO-VENDORED from dr-mario-mods/fpga/copro @ 9e040e3-dirty (2026-07-25T15:10:46Z) -- DO NOT EDIT HERE.
+// AUTO-VENDORED from dr-mario-mods/fpga/copro @ f5ca26a (2026-07-26T18:56:48Z) -- DO NOT EDIT HERE.
 // Edit the canonical source in dr-mario-mods/fpga/copro and re-run sync_to_pocket.sh.
 // Dr. Mario depth-3 LEAF EVAL accelerator. Computes the full endgame leaf
 // (shape + spawn + setup + buried + readiness_ext + vrdy + pollution + combine)
@@ -11,7 +11,7 @@
 //   done            : high when finished; sco[15:0] (signed) & win valid
 // Bit-exact contract (validated vs the python goldens in tb_leafeval):
 //   sco = 5000 - 12*maxh - 20*holes - 90*toprisk - 150*spawn + 60*setup
-//         - 30*buried + 12*rdy_ext + 24*vrdy - 6*pollution + matched60   (16-bit wrap; buried color-aware + nearest-2 cap, R6 matched-cover pre-scaled)
+//         - 30*buried + 12*rdy_ext + 12*vrdy - 6*pollution + matched60   (16-bit wrap; buried color-aware + nearest-2 cap, R6 matched-cover pre-scaled; r47b5: vrdy 24->12, was over-weighted -- eval A/B)
 //   win = (no virus on board)
 module LeafEval(
 	input             clk,
@@ -382,7 +382,7 @@ always @(posedge clk) begin
 					anyvir <= 1'b1;
 					// R6 matched-cover setup: a same-color non-virus cell resting directly on the virus
 					// (== the R1 exemption condition) counts a started vertical clear.
-					if (curcol == col_of[{wr_[3:0], wc[2:0]}]) matched60 <= matched60 + 13'd60;
+					if (curcol == col_of[{wr_[3:0], wc[2:0]}]) matched60 <= matched60 + 13'd48;
 					// R1 color-aware buried; R7b: charge only the 2 topmost viruses in the column.
 					if (vseen < 5'd2)
 						buried <= buried + fillcnt - ((curcol == col_of[{wr_[3:0], wc[2:0]}]) ? curlen : 5'd0);
@@ -591,11 +591,11 @@ always @(posedge clk) begin
 			     - 16'd20  * holes_p
 			     - 16'd90  * toprisk_p
 			     - 16'd150 * spawn_p
-			     + 16'd60  * setup_p
+			     + 16'd32  * setup_p
 			     + matched60_p
-			     - 16'd30  * buried_p
-			     + 16'd12  * rdy_ext_p
-			     + 16'd24  * vrdy_p
+			     - 16'd48  * buried_p
+			     + 16'd8   * rdy_ext_p
+			     + 16'd8   * vrdy_p
 			     - 16'd6   * pollution_p;
 			done <= 1'b1;
 			st <= S_IDLE;
@@ -610,8 +610,8 @@ always @(posedge clk) begin
 			gb = 8'd15 - {3'd0, colh[off_b[2:0]]} - {4'd0, off_b[6:3]};
 			dd_holes <= a_o4[1] ? (ga + gb) : 8'd0;
 			// matched60 delta: a placed cell resting directly on a same-color virus adds a cover (+60)
-			dd_matched <= ((off_a[6:3] != 4'd15 && vir_of[off_a + 7'd8] && col_of[off_a + 7'd8] == pca) ? 13'd60 : 13'd0)
-			            + ((off_b[6:3] != 4'd15 && vir_of[off_b + 7'd8] && col_of[off_b + 7'd8] == pcb) ? 13'd60 : 13'd0);
+			dd_matched <= ((off_a[6:3] != 4'd15 && vir_of[off_a + 7'd8] && col_of[off_a + 7'd8] == pca) ? 13'd48 : 13'd0)
+			            + ((off_b[6:3] != 4'd15 && vir_of[off_b + 7'd8] && col_of[off_b + 7'd8] == pcb) ? 13'd48 : 13'd0);
 			// pollution delta: scan the 2 placed cells' rows+cols for differently-colored viruses
 			dsoff <= {off_a[6:3], 3'd0}; dstep <= 4'd1; dscnt <= 5'd8; li <= 2'd0;
 			st <= S_DPOL;
