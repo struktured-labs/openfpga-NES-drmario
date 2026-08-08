@@ -69,7 +69,17 @@ cr_ie_info.json
 !info.txt
 # ROMS Checklist
 !checklist.sha1
-!checklist.md5build_*.log
+!checklist.md5
+# Quartus build logs + per-run scratch. The `build_*.log` pattern below was silently
+# inert until 2026-08-08: it had been concatenated onto the `!checklist.md5` line above
+# (missing newline), so 40+ build logs showed as untracked in every `git status`.
+build_*.log
+projects/*.log
+projects/*.start
+projects/*.DONE
+projects/*.speedbak
+projects/output_files*/
+projects/diag.tcl
 artifacts/
 .pubvenv/
 .github/publish/
