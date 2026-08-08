@@ -1,0 +1,46 @@
+v6b boardhold STUDY-leak fix — staging 20260808
+================================================
+
+WHAT THIS FIXES (owner field report, top priority for this weekend):
+The on-card "Dr Mario STOMPER vs YOU v6 (boardhold).nes" (3e7c6ed9) renders the
+STUDY pause letters + next-pill preview sprites (OAM slots 32-40) over LIVE PLAY
+every frame — the "flickers randomly and shows STUDY on top as if start is
+pressed" defect. Root cause: the DRSTUDY2P hook wrote visible-Y STUDY sprites on
+every play frame, wrongly assuming the base ROM's OAM rebuild would overwrite
+them (R8712 only pads from the sprite high-water mark; in VS play the game owns
+zero sprites, so nothing ever cleaned the slots). NOT a spurious START; NOT
+DRHOLDBOARD. Fix commit 72a8628 / manifests bf9d86e on branch study2p-pause-gate
+(dr-mario worktree), tag study2p-leak-fix-20260808.
+
+CARTS IN THIS FOLDER (verify against CHECKSUMS.md5 before copying):
+
+1. "Dr Mario STOMPER vs YOU v6b (boardhold fixfl).nes"   md5 49e10ce9d40b389835f71215e38eb8ec
+   = the WEEKEND CART. On-card v6-boardhold + STUDY2P leak fix, nothing else.
+   Gate-tested in Mesen: unfixed cart 5,677/6,000 STUDY-leak frames; this cart
+   0/36,000 (10-min soak); pause still shows STUDY and clears on unpause;
+   board-hold arms/holds/releases with 0 STUDY frames over 4,863 held frames.
+   REPLACES on-card "Dr Mario STOMPER vs YOU v6 (boardhold).nes" (3e7c6ed9).
+
+2. "Dr Mario STOMPER v7b PRESTART (fixfl, UNTESTED).nes"   md5 6f6224f26faee857d7793eaf541b498d
+   = v7 PRESTART + the same fix (v7 INHERITS the leak — staged v7 e949d82a in
+   staging/prestart_v7_20260808/ is DEFECTIVE and superseded by this).
+   Emulator-gated only (0/6,000 leak frames); UNTESTED on Pocket silicon —
+   keep the UNTESTED suffix until it has survived a hardware session.
+
+INSTALL (owner does the card trip; nothing here touches the SD card):
+  - Copy cart #1 to the Pocket SD next to the existing carts. KEEP the old v6
+    boardhold cart per the keep-all-versions rule; the fixfl name disambiguates.
+  - Optionally copy cart #2; it supersedes the staged v7 PRESTART (e949d82a).
+  - Core is unchanged — both carts run on the already-installed strand180_20
+    core (a0d5190f). Cart and core version independently.
+
+REPRODUCIBILITY (verified this session, twice per cart):
+  tools/romgen.py rebuild roms/manifests/study2p-fix-v6-boardhold.json  -> 49e10ce9 (2/2)
+  tools/romgen.py rebuild roms/manifests/study2p-fix-v7-prestart.json  -> 6f6224f2 (2/2)
+  at dr-mario branch study2p-pause-gate @ bf9d86e; base ROM drmario_v28cs.nes
+  7d307c3051ebc0f8a10e259e3c270acb verified before/after. DRBUILDID pinned 0 in
+  both recipes (RECIPE_*.json here = the committed romgen manifests).
+
+KNOWN, PRE-EXISTING, NOT A REGRESSION: during a real pause, STUDY renders only
+~1 frame in ~40 on this cart family (base pause spin blanks the shadow after
+each NMI draw). Identical on the unfixed field cart; separate task if wanted.
